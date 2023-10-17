@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-
 import io.filmtime.data.model.GeneralError
 import io.filmtime.data.model.VideoThumbnail
 import io.filmtime.data.model.VideoType
@@ -49,6 +49,7 @@ fun HomeScreen(
   viewModel: HomeViewModel,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
+  onMoreClick:(title:String)->Unit
 ) {
 
 
@@ -94,12 +95,16 @@ fun HomeScreen(
       contentPadding = PaddingValues(top = 16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+
       items(state.videoSections) { videoSection ->
+
         VideoSectionRow(
           title = videoSection.title,
           items = videoSection.items,
           onMovieClick = onMovieClick,
           onShowClick = onShowClick,
+          onMoreClick = onMoreClick,
+
         )
       }
     }
@@ -114,6 +119,7 @@ fun VideoSectionRow(
   items: List<VideoThumbnail>,
   onMovieClick: (tmdbId: Int) -> Unit,
   onShowClick: (tmdbId: Int) -> Unit,
+  onMoreClick: (title : String) -> Unit
 ) {
   Column {
     Text(
@@ -122,6 +128,10 @@ fun VideoSectionRow(
       text = title,
       style = MaterialTheme.typography.titleMedium,
     )
+  Text(text = "More", modifier = Modifier
+    .clickable { onMoreClick(title) }
+    .align(Alignment.End)
+    .padding(end = 4.dp))
     LazyRow(
       modifier = Modifier
         .height(200.dp)
@@ -175,7 +185,8 @@ fun ApiErrorScreen(onRetry:()->Unit) {
 
     Image(painter = painterResource(id = R.drawable.apierror),
       contentDescription ="not_found",
-      modifier = Modifier.clip(shape = CircleShape)
+      modifier = Modifier
+        .clip(shape = CircleShape)
         .size(150.dp)
 
     )
