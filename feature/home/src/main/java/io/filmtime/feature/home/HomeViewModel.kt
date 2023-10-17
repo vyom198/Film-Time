@@ -1,6 +1,4 @@
 package io.filmtime.feature.home
-
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +20,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
   private val getTrendingMovies: GetTrendingMoviesUseCase,
   private val getTrendingShows: GetTrendingShowsUseCase,
+
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeUiState(isLoading = false))
@@ -33,6 +32,7 @@ class HomeViewModel @Inject constructor(
     loadTrendingShows()
 
   }
+
 
   fun loadTrendingMovies() {
     viewModelScope.launch {
@@ -89,11 +89,8 @@ class HomeViewModel @Inject constructor(
               is Failure -> {
                 _state.update { state ->
                   state.copy(error = result.error, isLoading = false, videoSections = emptyList())
-
                 }
-
               }
-
 
             }
           }
@@ -104,5 +101,6 @@ class HomeViewModel @Inject constructor(
  fun retry (){
    _state.update { state-> state.copy(isLoading = true, error = null) }
  }
+
 
 }
